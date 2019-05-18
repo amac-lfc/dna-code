@@ -1,13 +1,7 @@
-import csv
-import numpy as np
+import pandas as pd
 
-f = open("computed_METnormal_OV.csv", "w")
+data = pd.read_csv('computed_METnormal_OV.csv', delimiter = "\t", names = ["gene", "mean", "SD"])
 
-with open("METnormal_OV.csv") as csvfile:
-    csvdata = csv.reader(csvfile, delimiter = ",", quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
-    next(csvdata, None)
-    for row in csvdata:
-        m = np.mean(row[1:])
-        sd = np.std(row[1:], ddof = 1)
-        f.write(row[0]+"\t"+ str(m) + "\t" + str(sd) + "\n")
-    f.close()
+data = data.sort_values(by=["mean"], ascending=False)
+
+data.to_csv('computed_METnormal_OV.csv')
