@@ -20,4 +20,4 @@ def condition(row):
 
 mergedDF['methelation'] = mergedDF.apply(condition, axis=1)
 
-mergedDF.to_csv("mergedMethylStatus.csv")
+mergedDF.to_csv("mergedMethylStatus.csv")   

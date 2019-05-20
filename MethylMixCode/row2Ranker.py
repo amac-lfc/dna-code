@@ -4,4 +4,4 @@ data = pd.read_csv('computed_METnormal_OV.csv', delimiter = "\t", names = ["gene
 
 data = data.sort_values(by=["mean"], ascending=False)
 
-data.to_csv('computed_METnormal_OV.csv')
+data.to_csv('Ranked_METnormal_OV.csv')
