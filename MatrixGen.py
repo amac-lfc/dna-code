@@ -41,8 +41,8 @@ for i in range(len(MET['genes'].values)):
     temp = np.where(GE['genes'].values == MET['genes'].values[i])[0]
     interface[i] = (temp)[0]
 
-MET.to_csv("MatrixX.csv", index = False)
-GE.to_csv("MatrixY.csv", index = False)
+MET.to_csv("METcancer_OV_processed.csv", index = False)
+GE.to_csv("GEcancer_OV_processed.csv", index = False)
 with open("Interface.txt", "w") as f:
     for item in interface:
         f.write("%s\n" % item)
