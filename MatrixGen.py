@@ -49,10 +49,10 @@ with open("Interface.txt", "w") as f:
 
 MET.to_pickle("METcancer_OV_processed.pkl")
 GE.to_pickle("GEcancer_OV_processed.pkl")
-np.save("Interface.pkl", interface, allow_pickle = True)
+np.save("Interface", interface, allow_pickle = True)
 
 MET = MET.drop(columns = ['genes'])
 GE = GE.drop(columns = ['genes'])
 
-np.save("Matrix_X.pkl", MET.values, allow_pickle = True)
-np.save("Matrix_Y.pkl", GE.values, allow_pickle = True)
+np.save("Matrix_X", MET.values, allow_pickle = True)
+np.save("Matrix_Y", GE.values, allow_pickle = True)
