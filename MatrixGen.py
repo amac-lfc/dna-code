@@ -21,6 +21,7 @@ GE = GE[inBoth]
 MET = MET[inBoth]
 
 
+
 #removing genes that arent in both
 mergedList = np.zeros(0, dtype = str)
 GEgeneList = GE["genes"].values
@@ -31,22 +32,17 @@ for i in range(len(MET["genes"].values)):
     temp = np.where(GE["genes"].values == genome)[0]
     mergedList = np.append(mergedList, GE["genes"].values[temp])
 
+
 MET = MET[MET['genes'].isin(mergedList)]
 GE = GE[GE['genes'].isin(mergedList)]
 
 # generating the interface array
-interface = np.zeros(len(METgeneList), dtype=int)
+interface = np.zeros(len(MET["genes"].values), dtype=int)
 
 for i in range(len(MET["genes"].values)):
     temp = np.where(GE['genes'].values == MET['genes'].values[i])[0]
     interface[i] = (temp)[0]
 
-print(interface)
-# MET.to_csv("METcancer_OV_processed.csv", index = False)
-# GE.to_csv("GEcancer_OV_processed.csv", index = False)
-# with open("Interface.txt", "w") as f:
-#     for item in interface:
-#         f.write("%s\n" % item)
 
 MET.to_pickle("pklData/METcancer_OV_processed.pkl")
 GE.to_pickle("pklData/GEcancer_OV_processed.pkl")
