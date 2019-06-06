@@ -6,10 +6,10 @@ GE  = pd.read_pickle("pklData/GEcancer_OV_processed.pkl")
 
 print(MET, GE)
 
-X = np.load("pklData/Matrix_X.pkl.npy")
-Y = np.load("pklData/Matrix_Y.pkl.npy")
-interface = np.load("pklData/Interface.pkl.npy")
-newY = Y[interface]
+X = np.load("pklData/Matrix_X.npy")
+Y = np.load("pklData/Matrix_Y.npy")
+newY = np.load("pklData/Matrix_NewY.npy")
+interface = np.load("pklData/Interface.npy")
 
 print(X)
 print(Y)
