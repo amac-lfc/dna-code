@@ -29,7 +29,7 @@ Y2 = np.zeros(len(X2),'d')+coefs[0]
 for i in range(1, len(coefs)):
     Y2 += X2**i*coefs[i]
 
-N = 200
+N = 5000 
 plt.figure()
 for j in range(N):
     plt.clf()
