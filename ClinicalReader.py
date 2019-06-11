@@ -30,19 +30,24 @@ count = np.in1d(life, 'alive').sum()
 Cpat = Clin[17]
 for i in range(len(Cpat)):
     Cpat[i] = Cpat[i].upper()
+
 Etemp = Exp.columns
 Epat = np.zeros(0, dtype = str)
+
 for i in range(len(Etemp)):
     temp = Etemp[i]
     Epat = np.append(Epat, temp[:12])
+
+BpatIndex = np.nonzero(np.in1d(Epat, Cpat))
 Bpat = np.intersect1d(Epat, Cpat)
 
-num = np.arange(len(Bpat))
-PatDic = {}
-for num, Bpat in zip(num, Bpat):
-    PatDic[num] = Bpat
+# num = np.arange(len(Bpat))
+# PatDic = {}
+# for num, Bpat in zip(num, Bpat):    #usless dicitonary
+#     PatDic[num] = Bpat              #somehow also messes up Bpat
 
-
-
-
-#Matrix generation
+# PatientXgene Matrix generation
+newExp = Exp[Exp.columns[BpatIndex]]
+newExp = newExp.transpose()
+newExp.columns = Exp["Hybridization REF"].values
+print(newExp)
