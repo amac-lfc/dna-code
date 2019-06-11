@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-Clin = pd.read_csv("../../FireBrowse/Clinical_Level/OV.clin.merged.txt", \
+ClinD = pd.read_csv("../../FireBrowse/Clinical_Level/OV.clin.merged.txt", \
                     delimiter = "\t")
-Clin = Clin.to_numpy()
+Clin = ClinD.to_numpy()
 Exp = pd.read_csv("../../FireBrowse/OV.normalization_gene__data.data.txt", \
                     delimiter = "\t")
 
@@ -22,24 +22,27 @@ x = np.arange(0, len(y), 1)
 # number survied and died
 life = Clin[736]
 life = life[1:]
-# count = np.in1d(life, 'alive').sum()
-
-# plt.hist(y, bins=[0,1115, 2250, 3375, 4500])
-# plt.show()
-
-# # Scatter plot ofo days survived
-# plt.scatter(x, y)
-# plt.xlabel("patient")
-# plt.ylabel("Days to Death")
-# # plt.yticks(np.arange(0, 3000, 100))
-# plt.show()
+count = np.in1d(life, 'alive').sum()
+# splt.hist(y, bins=[0,1115, 2250, 3375, 4500])
 
 
-# Patient ID
-CPat = Clin[17]
-
+# Patient ID dictionary
+Cpat = Clin[17]
+for i in range(len(Cpat)):
+    Cpat[i] = Cpat[i].upper()
 Etemp = Exp.columns
-Epat = np.zeros(0)
+Epat = np.zeros(0, dtype = str)
 for i in range(len(Etemp)):
-    np.append(Epat, Etemp[i])
-print(Epat)
+    temp = Etemp[i]
+    Epat = np.append(Epat, temp[:12])
+Bpat = np.intersect1d(Epat, Cpat)
+
+num = np.arange(len(Bpat))
+PatDic = {}
+for num, Bpat in zip(num, Bpat):
+    PatDic[num] = Bpat
+
+
+
+
+#Matrix generation
