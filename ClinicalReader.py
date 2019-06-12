@@ -8,7 +8,9 @@ ClinD = pd.read_csv("../../FireBrowse/Clinical_Level/OV.clin.merged.txt", \
 Clin = ClinD.to_numpy()
 Exp = pd.read_csv("../../FireBrowse/OV.normalization_gene__data.data.txt", \
                     delimiter = "\t")
-
+Norm = pd.read_csv("../../OVCancerDataSet/GEnormal_OV.csv", \
+                    delimiter = ",")
+Norm = Norm.rename(columns = {"Unnamed: 0": "genes"})
 
 # Days to death
 DtD = Clin[22]
@@ -46,8 +48,29 @@ Bpat = np.intersect1d(Epat, Cpat)
 # for num, Bpat in zip(num, Bpat):    #usless dicitonary
 #     PatDic[num] = Bpat              #somehow also messes up Bpat
 
+
+#List of all genes in same order as X
+G = Exp["Hybridization REF"].values[1:]
+G = G.astype(str)
+normGenes = Norm["genes"].values
+normGenes = normGenes.astype(str)
+
+# print(G)
+# print(normGenes)
+# np.savetxt("FireBrowseGenes", G, fmt="%s")
+# np.savetxt("MethylMixGenes", normGenes, fmt="%s")
+
+
+# Normal Expression averages GEN
+GEN = np.zeros(0, dtype = float)
+# print(Norm)
+# print(G)
+inter = [x for x in G if x in Norm['genes'].values]
+print(len(inter))
+Norm['mean'] = Norm.mean(axis=1)
+MeanList = Norm['mean'].values
+
 # PatientXgene Matrix generation
-newExp = Exp[Exp.columns[BpatIndex]]
-newExp = newExp.transpose()
-newExp.columns = Exp["Hybridization REF"].values
-print(newExp)
+newExp = Exp.to_numpy()
+newExp = newExp[1:,1:]
+newExp = np.transpose(newExp)
