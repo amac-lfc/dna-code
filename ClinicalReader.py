@@ -36,7 +36,8 @@ for i in range(len(Etemp)):
 
 B = np.intersect1d(Epat, Cpat, return_indices = True)
 Bpat = B[0]
-patIndex = B[1]
+patIndexExp = B[1]
+patIndexClin = B[2]
 
 #List of all genes in same order as X
 G = Exp["Hybridization REF"].values[1:]
@@ -68,13 +69,17 @@ for i in range(len(interface)):
     # print(i, interface[i])
     if interface[i] != -1:
         MeanInter[interface[i]-1] = MeanList[i]
+print(len(MeanList))
+print(len(interface))
+print(len(MeanInter))
+np.savetxt("MeanInter.txt", MeanInter)
 
 # PatientXgene Matrix generation
 Bgene = np.intersect1d(normGenes, G)
 Exp = Exp[~Exp["Hybridization REF"].isin(Bgene)]
 OIndex = []
 for x in range(len(Exp.columns)):
-    if x not in patIndex:
+    if x not in patIndexExp:
         OIndex.append(x)
 Exp = Exp.drop(Exp.columns[OIndex], axis =1)
 newExp = Exp.to_numpy()
@@ -82,22 +87,24 @@ newExp = newExp[1:,1:]
 newExp = np.transpose(newExp)
 
 # Days to death
-DtD = Clin[22]
-y = [x for x in DtD if str(x)!= 'nan']
-y = y[1:]
-y = np.asarray(y)
-y = y.astype('int')
+CIndex = []
+for x in range(len(Exp.columns)):
+    if x not in patIndexClin:
+        CIndex.append(x)
+DtD = np.delete(Clin[22], CIndex)
+life = np.delete(Clin[736], CIndex)
 
-# number survied and died
-life = Clin[736]
-life = life[1:]
-count = np.in1d(life, 'alive').sum()
-print(count+len(y))
-
+temp = []
+for i in range(len(DtD)):
+        if str(DtD[i]) == "nan" and str(life[i]) == "alive":
+                DtD[i] = -1
+        if str(DtD[i]) == "nan":
+                temp.append(i)
+DtD = np.delete(DtD, temp)
 
 #printStatments
 # print(newExp)
 # print(len(interface))
 # print(len(MeanInter))
 # print(newExp.shape)
-# print(len(y))
+# print(len(DtD))
