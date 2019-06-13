@@ -59,6 +59,17 @@ np.savetxt("interfaceOFClinReader.txt", interface)
 np.savetxt("FireBrowseGenes.txt", G, fmt="%s")
 np.savetxt("MethylMixGenes.txt", Norm['genes'].values, fmt="%s")
 
+# PatientXgene Matrix generation
+Bgene = np.intersect1d(normGenes, G)
+Exp = Exp[Exp["Hybridization REF"].isin(Bgene)]
+OIndex = []
+for x in range(len(Exp.columns)):
+    if x not in patIndexExp:
+        OIndex.append(x)
+Exp = Exp.drop(Exp.columns[OIndex], axis =1)
+newExp = Exp.to_numpy()
+newExp = newExp[1:,1:]
+newExp = np.transpose(newExp)
 
 # Normal Expression averages GEN
 GEN = np.zeros(0, dtype = float)
@@ -74,17 +85,6 @@ print(len(interface))
 print(len(MeanInter))
 np.savetxt("MeanInter.txt", MeanInter)
 
-# PatientXgene Matrix generation
-Bgene = np.intersect1d(normGenes, G)
-Exp = Exp[~Exp["Hybridization REF"].isin(Bgene)]
-OIndex = []
-for x in range(len(Exp.columns)):
-    if x not in patIndexExp:
-        OIndex.append(x)
-Exp = Exp.drop(Exp.columns[OIndex], axis =1)
-newExp = Exp.to_numpy()
-newExp = newExp[1:,1:]
-newExp = np.transpose(newExp)
 
 # Days to death
 CIndex = []
@@ -103,8 +103,8 @@ for i in range(len(DtD)):
 DtD = np.delete(DtD, temp)
 
 #printStatments
-# print(newExp)
-# print(len(interface))
-# print(len(MeanInter))
-# print(newExp.shape)
-# print(len(DtD))
+print(newExp)
+print(len(interface))
+print(len(MeanInter))
+print(newExp.shape)
+print(len(DtD))
