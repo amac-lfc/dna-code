@@ -17,11 +17,6 @@ G = Exp["Hybridization REF"].values[1:]
 G = G.astype(str)
 G = [x for x in G if x in Norm['genes'].values]
 
-with open('In_Common_Genes', 'w') as f:
-    for item in G:
-        f.write("%s\n" % item)
-
-
 # Patient ID dictionary
 Cpat = Clin[17]
 for i in range(len(Cpat)):
@@ -30,8 +25,10 @@ for i in range(len(Cpat)):
 Etemp = Exp.columns
 Epat = np.zeros(0, dtype = str)
 
+dicts = {}
 for i in range(len(Etemp)):
     temp = Etemp[i]
+    dicts.update({temp[:12] : Etemp[i]})
     Epat = np.append(Epat, temp[:12])
 
 B = np.intersect1d(Epat, Cpat, return_indices = True)
@@ -54,22 +51,22 @@ for i in range(len(Norm["genes"].values)):
     else:
         interface[i] = -1
 
-
-np.savetxt("interfaceOFClinReader.txt", interface)
-np.savetxt("FireBrowseGenes.txt", G, fmt="%s")
-np.savetxt("MethylMixGenes.txt", Norm['genes'].values, fmt="%s")
+# np.savetxt("interfaceOFClinReader.txt", interface)
+# np.savetxt("FireBrowseGenes.txt", G, fmt="%s")
+# np.savetxt("MethylMixGenes.txt", Norm['genes'].values, fmt="%s")
 
 # PatientXgene Matrix generation
 Bgene = np.intersect1d(normGenes, G)
 Exp = Exp[Exp["Hybridization REF"].isin(Bgene)]
-OIndex = []
-for x in range(len(Exp.columns)):
-    if x not in patIndexExp:
-        OIndex.append(x)
-Exp = Exp.drop(Exp.columns[OIndex], axis =1)
-newExp = Exp.to_numpy()
+fullNames = []
+for i in range(len(Bpat)):
+        fullNames.append(dicts.get(Bpat[i]))
+fullNames = np.asarray(fullNames)
+Exptemp = Exp[fullNames]
+newExp = Exptemp.to_numpy()
 newExp = newExp[1:,1:]
 newExp = np.transpose(newExp)
+X = newExp
 
 # Normal Expression averages GEN
 GEN = np.zeros(0, dtype = float)
@@ -77,14 +74,9 @@ Norm['mean'] = Norm.mean(axis=1)
 MeanList = Norm['mean'].values
 MeanInter = np.zeros(np.max(interface))
 for i in range(len(interface)):
-    # print(i, interface[i])
     if interface[i] != -1:
         MeanInter[interface[i]-1] = MeanList[i]
-print(len(MeanList))
-print(len(interface))
-print(len(MeanInter))
-np.savetxt("MeanInter.txt", MeanInter)
-
+GEN = MeanInter[np.nonzero(MeanInter)]
 
 # Days to death
 CIndex = []
@@ -101,10 +93,12 @@ for i in range(len(DtD)):
         if str(DtD[i]) == "nan":
                 temp.append(i)
 DtD = np.delete(DtD, temp)
+y = DtD
 
-#printStatments
-print(newExp)
-print(len(interface))
-print(len(MeanInter))
-print(newExp.shape)
-print(len(DtD))
+# printStatments
+np.savetxt("GEN.txt", GEN, fmt="%s")
+np.savetxt("X.txt", X, fmt="%s")
+np.savetxt("y.txt", y, fmt="%s")
+print(len(GEN))
+print(X.shape)
+print(len(y))
