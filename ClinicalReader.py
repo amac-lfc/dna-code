@@ -12,7 +12,8 @@ Norm = pd.read_csv("../../OVCancerDataSet/GEnormal_OV.csv", \
                     delimiter = ",")
 Norm = Norm.rename(columns = {"Unnamed: 0": "genes"})
 
-#get only genes in both
+
+#get only genes in both Expresion and Norm
 G = Exp["Hybridization REF"].values[1:]
 G = G.astype(str)
 G = [x for x in G if x in Norm['genes'].values]
@@ -33,50 +34,52 @@ for i in range(len(Etemp)):
 
 B = np.intersect1d(Epat, Cpat, return_indices = True)
 Bpat = B[0]
-patIndexExp = B[1]
+patIndexExp = B[1] 
 patIndexClin = B[2]
 
-#List of all genes in same order as X
-G = Exp["Hybridization REF"].values[1:]
-G = G.astype(str)
+
+# PatientXgene Matrix generation
+
+Exp = Exp[Exp["Hybridization REF"].isin(G)]
+
+
+#Interface Gen
 normGenes = Norm["genes"].values
 normGenes = normGenes.astype(str)
 
 interface = np.zeros(len(Norm["genes"].values), "i")
 k=0
 for i in range(len(Norm["genes"].values)):
-    temp = np.where(G == Norm['genes'].values[i])[0]
+    temp = np.where(Exp["Hybridization REF"] == Norm['genes'].values[i])[0]
     if len(temp) != 0:
         interface[i] = temp[0]
-    else:
+    else: 
         interface[i] = -1
 
-# np.savetxt("interfaceOFClinReader.txt", interface)
-# np.savetxt("FireBrowseGenes.txt", G, fmt="%s")
-# np.savetxt("MethylMixGenes.txt", Norm['genes'].values, fmt="%s")
-
-# PatientXgene Matrix generation
-Bgene = np.intersect1d(normGenes, G)
-Exp = Exp[Exp["Hybridization REF"].isin(Bgene)]
 fullNames = []
 for i in range(len(Bpat)):
         fullNames.append(dicts.get(Bpat[i]))
 fullNames = np.asarray(fullNames)
 Exptemp = Exp[fullNames]
-newExp = Exptemp.to_numpy()
-newExp = newExp[1:,1:]
-newExp = np.transpose(newExp)
-X = newExp
 
-# Normal Expression averages GEN
+# GEN gen
 GEN = np.zeros(0, dtype = float)
-Norm['mean'] = Norm.mean(axis=1)
-MeanList = Norm['mean'].values
+MeanList = Norm.mean(axis = 1)
+
 MeanInter = np.zeros(np.max(interface))
 for i in range(len(interface)):
     if interface[i] != -1:
         MeanInter[interface[i]-1] = MeanList[i]
 GEN = MeanInter[np.nonzero(MeanInter)]
+
+#GE gen 
+GE = np.zeros((len(GEN),3))
+GElist = np.zeros( len(GEN), dtype = str)
+for i in range(len(interface)):
+    if interface[i] != -1:
+        GE[interface[i]-1] = Norm.values[i,1:] 
+        GElist[interface[i]-1] = Norm.values[i,0]
+GE = np.transpose(GE)
 
 # Days to death
 CIndex = []
@@ -93,12 +96,26 @@ for i in range(len(DtD)):
         if str(DtD[i]) == "nan":
                 temp.append(i)
 DtD = np.delete(DtD, temp)
-y = DtD
+Y = DtD
+
+
+#convert newExp to X and make numpy matrix
+newExp = Exptemp.to_numpy()
+newExp = newExp.astype(np.float)
+newExp = np.transpose(newExp)
+X = newExp
 
 # printStatments
-np.savetxt("GEN.txt", GEN, fmt="%s")
-np.savetxt("X.txt", X, fmt="%s")
-np.savetxt("y.txt", y, fmt="%s")
-print(len(GEN))
-print(X.shape)
-print(len(y))
+np.save("FirePkl/y", Y, allow_pickle= True)
+np.save("FirePkl/X", X, allow_pickle= True)
+np.save("FirePkl/GEN", GEN, allow_pickle= True)
+np.save("FirePkl/GE", GE, allow_pickle= True)
+np.save("FirePkl/GElist", GElist, allow_pickle= True)
+
+#print all the shapes
+print("print of all the shapes")
+print("shape of GElist =" , GElist.shape)
+print("shape of GE =" ,GE.shape)
+print("shape of GEN =" ,GEN.shape)
+print("shape of X =" ,X.shape)
+print("shape of Y =" , Y.shape)
