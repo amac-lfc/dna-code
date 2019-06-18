@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
+import sys 
 
 ClinD = pd.read_csv("../../FireBrowse/Clinical_Level/OV.clin.merged.txt", \
                     delimiter = "\t")
@@ -12,7 +12,10 @@ Norm = pd.read_csv("../../OVCancerDataSet/GEnormal_OV.csv", \
                     delimiter = ",")
 Norm = Norm.rename(columns = {"Unnamed: 0": "genes"})
 
-Debug = True
+if len(sys.argv) == 1:
+        Debug = True
+else:
+        Debug = sys.argv[1]
 
 temp = np.where(pd.isnull(Clin[736])) 
 Clin = np.delete(Clin, [temp], axis =1)
@@ -66,23 +69,23 @@ normGenes = normGenes.astype(str)
 
 if Debug: print("norm genes length", normGenes.shape )
 
-interface = np.zeros(len(Norm["genes"].values), "i")
-k=0
-for i in range(len(Norm["genes"].values)):
-    temp = np.where(Exp["Hybridization REF"] == Norm['genes'].values[i])[0]
-    if len(temp) != 0:
-        interface[i] = temp[0]
-    else: 
-        interface[i] = -1
+interface = np.zeros(len(Exp["Hybridization REF"].values), "i")
 
+if Debug: print("interface length @ gen", interface.shape)
+
+k=0
+for i in range(len(Exp["Hybridization REF"].values)):
+    interface[i] = np.where(Exp["Hybridization REF"].values[i] == Norm['genes'])[0]
+
+if Debug: print("shape of interface after filling it", interface.shape)
+
+# get only in common patients in EXP
 fullNames = []
 for i in range(len(Bpat)):
         fullNames.append(dicts.get(Bpat[i]))
 fullNames = np.asarray(fullNames)
 Exptemp = Exp[fullNames] 
-#not touched again untill the end when converted to Numpy matrix
 
-if Debug: print("shape of interface", interface.shape)
 
 if Debug: print("Exp after removal of no matching names", Exptemp.shape)
 
@@ -90,30 +93,44 @@ if Debug: print("Exp after removal of no matching names", Exptemp.shape)
 GEN = np.zeros(0, dtype = float)
 MeanList = Norm.mean(axis = 1)
 
-MeanInter = np.zeros(np.max(interface))
+if Debug: print(" shape of interface", interface.shape)
+if Debug: print("len of mean list", len(MeanList))
+
+MeanInter = np.zeros(len(interface), "d")
+
+if Debug: print("shape of Mean Inter", MeanInter.shape)
+
 for i in range(len(interface)):
-    if interface[i] != -1:
-        MeanInter[interface[i]-1] = MeanList[i]
-GEN = MeanInter[np.nonzero(MeanInter)]
+        MeanInter[i] = MeanList[interface[i]]
+GEN = MeanInter
+
+if Debug: print("shape of GEN", GEN.shape)
 
 #GE gen 
-GE = np.zeros((len(GEN),3))
-GElist = np.zeros( len(GEN), dtype = str)
+GE = np.zeros((len(interface),3))
+GElist = np.zeros( len(interface), dtype = str)
 for i in range(len(interface)):
-    if interface[i] != -1:
-        GE[interface[i]-1] = Norm.values[i,1:] 
-        GElist[interface[i]-1] = Norm.values[i,0]
+        GE[i] = Norm.values[interface[i],1:] 
+        GElist[i] = Norm.values[interface[i],0]
 GE = np.transpose(GE)
+
+if Debug: print("shape of GE", GE.shape)
 
 # Y Gen
 CIndex = []
 for x in range(len(Exp.columns)):
     if x not in patIndexClin:
         CIndex.append(x)   
+
 if Debug: print("number of items being deleted form both DtD and life"\
                 ,len(CIndex))
+
 DtD = np.delete(Clin[22], CIndex)
 life = np.delete(Clin[736], CIndex)
+
+if Debug: 
+        print("# of items in life after", len(life))
+        print("# of items in DtD after", len(DtD))
 
 if Debug == True:
         print("number of patients in alive", life.shape)
@@ -122,16 +139,21 @@ if Debug == True:
 tempL = []
 for i in range(len(DtD)):
         if str(DtD[i]) == "nan" and str(life[i]) == "alive":
-                DtD[i] = -1
-        elif str(DtD[i]) == "nan":
-                tempL.append(i)
+                 DtD[i] = -1
+        elif str(DtD[i] == 'nan'):
+                DtD[i] = -2
 
-DtD = np.delete(DtD, tempL)
+for i in range(len(DtD)):
+        temp = np.where(DtD == -2)
+        newExp = newExp.drop(i, axis = 1)
+        DtD = np.delete(DtD, temp)
 
 if Debug: print("patinets after merging DtD and life while removing NAN"\
                 , DtD.shape)    
 Y = DtD
 
+
+#remove all patients not in Y
 
 #convert newExp to X and make numpy matrix
 newExp = Exptemp.to_numpy()
