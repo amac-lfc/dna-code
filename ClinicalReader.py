@@ -108,10 +108,10 @@ if Debug: print("shape of GEN", GEN.shape)
 
 #GE gen 
 GE = np.zeros((len(interface),3))
-GElist = np.zeros( len(interface), dtype = str)
+GElist = np.empty(len(interface), dtype = "object")
 for i in range(len(interface)):
         GE[i] = Norm.values[interface[i],1:] 
-        GElist[i] = Norm.values[interface[i]]
+        GElist[i] = Norm.values[interface[i],0]
 GE = np.transpose(GE)
 
 if Debug: print("shape of GE", GE.shape)

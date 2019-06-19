@@ -10,11 +10,23 @@ GElist = np.load("FirePkl/GElist.npy")
 
 #plots
 f = np.arange(len(X[0]), dtype=int)
+f = np.arange(len(X[1]), dtype = int)
 
-plt.figure(1)
-plt.scatter(f, X[0])
+XmGEN = np.abs(np.mean(X, 0) - GEN)
 
-plt.figure(2)
-plt.scatter(f, GEN)
+p90 = np.percentile(XmGEN, 90)
+print(p90)
 
-plt.show()
+indexp90 = np.where(XmGEN >= p90 )
+
+
+print(GElist[indexp90])
+print(len(GElist[indexp90]))
+
+# plt.figure(1)
+# plt.scatter(f, XmGEN)
+
+# plt.figure(2)
+# plt.scatter(f, GEN)
+
+# plt.show()
