@@ -111,7 +111,7 @@ GE = np.zeros((len(interface),3))
 GElist = np.zeros( len(interface), dtype = str)
 for i in range(len(interface)):
         GE[i] = Norm.values[interface[i],1:] 
-        GElist[i] = Norm.values[interface[i],0]
+        GElist[i] = Norm.values[interface[i]]
 GE = np.transpose(GE)
 
 if Debug: print("shape of GE", GE.shape)
