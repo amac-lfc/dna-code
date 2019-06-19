@@ -84,10 +84,10 @@ fullNames = []
 for i in range(len(Bpat)):
         fullNames.append(dicts.get(Bpat[i]))
 fullNames = np.asarray(fullNames)
-Exptemp = Exp[fullNames] 
+Exp = Exp[fullNames] 
 
 
-if Debug: print("Exp after removal of no matching names", Exptemp.shape)
+if Debug: print("Exp after removal of no matching names", Exp.shape)
 
 # GEN gen
 GEN = np.zeros(0, dtype = float)
@@ -143,10 +143,13 @@ for i in range(len(DtD)):
         elif str(DtD[i] == 'nan'):
                 DtD[i] = -2
 
-for i in range(len(DtD)):
-        temp = np.where(DtD == -2)
-        newExp = newExp.drop(i, axis = 1)
-        DtD = np.delete(DtD, temp)
+
+temp = np.where(DtD == -2)
+DtD = np.delete(DtD, temp)
+print(temp)
+print(Exp)
+
+Exp = Exp.drop(Exp.columns[temp], axis = 1)
 
 if Debug: print("patinets after merging DtD and life while removing NAN"\
                 , DtD.shape)    
@@ -156,7 +159,7 @@ Y = DtD
 #remove all patients not in Y
 
 #convert newExp to X and make numpy matrix
-newExp = Exptemp.to_numpy()
+newExp = Exp.to_numpy()
 
 if Debug: print("newExp to numpy shape", newExp.shape)
 newExp = newExp.astype(np.float)
@@ -173,6 +176,7 @@ np.save("FirePkl/X", X, allow_pickle= True)
 np.save("FirePkl/GEN", GEN, allow_pickle= True)
 np.save("FirePkl/GE", GE, allow_pickle= True)
 np.save("FirePkl/GElist", GElist, allow_pickle= True)
+np.savetxt("GElist.txt", GElist, fmt = "%s")
 
 #print all the shapes
 print("print of all the shapes")
