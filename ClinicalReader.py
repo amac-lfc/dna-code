@@ -140,14 +140,14 @@ tempL = []
 for i in range(len(DtD)):
         if str(DtD[i]) == "nan" and str(life[i]) == "alive":
                  DtD[i] = -1
-        elif str(DtD[i] == 'nan'):
+        elif str(DtD[i]) == "nan":
                 DtD[i] = -2
 
 
 temp = np.where(DtD == -2)
 DtD = np.delete(DtD, temp)
-print(temp)
-print(Exp)
+print(DtD)
+    
 
 Exp = Exp.drop(Exp.columns[temp], axis = 1)
 
@@ -171,13 +171,11 @@ X = newExp
 if Debug: print("shape of X for good measure", X.shape)
 
 # printStatments
-np.save("FirePkl/y", Y, allow_pickle= True)
+np.save("FirePkl/Y", Y, allow_pickle= True)
 np.save("FirePkl/X", X, allow_pickle= True)
 np.save("FirePkl/GEN", GEN, allow_pickle= True)
 np.save("FirePkl/GE", GE, allow_pickle= True)
 np.save("FirePkl/GElist", GElist, allow_pickle= True)
-np.savetxt("GElist.txt", GElist, fmt = "%s")
-
 #print all the shapes
 print("print of all the shapes")
 print("shape of GElist =" , GElist.shape)
