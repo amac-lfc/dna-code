@@ -52,3 +52,15 @@ There are different ways to find distance between the clusters. The distance its
 2) Measure the distance between the farthest points of two clusters.
 3) Measure the distance between the centroids of two clusters.
 4) Measure the distance between all possible combination of points between the two clusters and take the mean.
+
+
+## Volcano Plots
+
+[visuz.volcano](https://github.com/reneshbedre/bioinfokit/blob/master/README.md)
+
+
+2-dimensional (2D) scatter plot having a shape like volcano
+
+Used to visualize and identify statistically significant gene expression changes from two different conditions (eg. normal vs. treated) in terms of log fold change (X-axis) and P-value (Y-axis)
+
+Easy to visualize expression of thousands of genes obtained from omics research and pinpoint genes with significant change
