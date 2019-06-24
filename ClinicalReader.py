@@ -170,6 +170,15 @@ X = newExp
 
 if Debug: print("shape of X for good measure", X.shape)
 
+
+
+#DTD histogram
+plt.clf()
+Y2 = Y.astype(int)
+print(np.amax(Y2))
+plt.hist(Y2, bins=[-100, 0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000])
+plt.savefig("Days to Death Histogram")
+
 # printStatments
 np.save("FirePkl/Y", Y, allow_pickle= True)
 np.save("FirePkl/X", X, allow_pickle= True)
