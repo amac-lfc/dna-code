@@ -168,6 +168,37 @@ newExp = np.transpose(newExp)
 if Debug: print("new Exp after transposition", newExp.shape)
 X = newExp
 
+Age = np.delete(Clin[14][1:582], CIndex)
+stages = np.delete(Clin[822][1:582], CIndex)
+stageList = np.empty(len(stages), dtype = object)
+for i in range(len(stages)):
+    temp = stages[i]
+    if str(temp) != 'nan':
+        temp2 = temp[6:]
+        stageList[i] = temp2
+CancerStageDict = {
+        "ia": 1,
+        "ib": 2,
+        "ic": 3,
+        "iia": 4,
+        "iib": 5,
+        "iic": 6,
+        "iiia": 7,
+        "iiib": 8,
+        "iiic": 9,
+        "iv": 10,
+        "None": -1
+}
+for i in range(len(stageList)):
+        stageList[i] = CancerStageDict[str(stageList[i])]
+ChemoList = np.delete(Clin[566][1:582], CIndex)
+
+if Debug: print("Age and stage len", len(Age), len(stages))
+
+X = np.column_stack((X, Age))
+X = np.column_stack((X, stageList))
+X = np.column_stack((X, ChemoList))
+
 if Debug: print("shape of X for good measure", X.shape)
 
 
