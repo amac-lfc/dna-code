@@ -191,7 +191,17 @@ CancerStageDict = {
 }
 for i in range(len(stageList)):
         stageList[i] = CancerStageDict[str(stageList[i])]
+
 ChemoList = np.delete(Clin[566][1:582], CIndex)
+ChemoDict = {
+        "chemotherapy": 1,
+        "nan" : -1,
+        "targeted molecular therapy" : 2,
+        "hormone therapy" : 3,
+        "immunotherapy" : 4
+}
+for i in range(len(ChemoList)):
+        ChemoList[i] = ChemoDict[str(ChemoList[i])]
 
 if Debug: print("Age and stage len", len(Age), len(stages))
 
