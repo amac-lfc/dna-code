@@ -104,3 +104,4 @@ print("Accuracy of Trees is :", {accuracy_score(Ytest, Ypredict)})
 
 Ypredict = clf_svm.predict(Xtest)
 print("Accuracy of SVC is :", {accuracy_score(Ytest, Ypredict)})
+

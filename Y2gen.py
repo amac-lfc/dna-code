@@ -11,24 +11,32 @@ Y = Y.astype(int)
 
 for i in range(len(Y)):
     if Y[i] < 0:
-        Y2[i] = 7 
+        Y2[i] = 6 
     elif Y[i] < 501:
-        Y2[i] = 1
+        Y2[i] = 0
     elif Y[i] < 1001:
-        Y2[i] = 2
+        Y2[i] = 1
     elif Y[i] < 1501:
-        Y2[i] = 3
+        Y2[i] = 2
     elif Y[i] < 2001:
-        Y2[i] = 4
+        Y2[i] = 3
     elif Y[i] < 2501:
-        Y2[i] = 5
+        Y2[i] = 4
     elif Y[i] > 3000:
-        Y2[i] = 6
+        Y2[i] = 5
+
+print(Y2)
+np.save("FirePkl/Y2", Y2, allow_pickle= True)
+
+X = X.astype(int)
 
 
-reg = np.zeros(len(X[:,1]), dtype = object)
-for i in range(len(X[:,1])):
-    reg[i] = sc.pearsonr(X[:,i],Y)
+Y2CoreSig = np.zeros((len(X[1, :]), 2))
+for i in range(len(X[1, :])):
+    Y2CoreSig[i] = sc.pearsonr(X[:, i],Y2)
+    # print(sc.pearsonr(X[:, i],Y2))
+    # print(Y2CoreSig[i])
 
-reg = reg[np.argsort(reg[:,1][1])]
-print(reg)
+np.save("FirePkl/Y2CoreSig", Y2CoreSig, allow_pickle=True)
+print(Y2CoreSig)
+
