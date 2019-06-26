@@ -1,4 +1,8 @@
-Create program to run random forest for full gene pool around 100 times, get adverage feature weight
+1: Create program to run random forest for full gene pool around 100 times, get adverage feature weight
 
-logisical regression for full gene pool with Y
+2: independatn samplses t test for change in gene expression for each gene(top 5%)
+
+3: logisical regression for full gene pool with Y
+
+4: find more statistical tests to examin statistical relivance
 
