@@ -33,7 +33,7 @@ def getImportancesTrees(classifier, X, features_list, targetFile):
 
 
 #number of genes used
-top = 1000
+top = 50  
 
 #file imports
 Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")

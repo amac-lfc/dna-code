@@ -67,10 +67,25 @@ def RFrun(DataSet):
     importanceArr = getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt')
 
     Ypredict = clf_RF.predict(Xtest)
-    print("Accuracy of SVC is :", {accuracy_score(Ytest, Ypredict)})
+    print("Accuracy  is :", {accuracy_score(Ytest, Ypredict)})
 
     return importanceArr
 
-totalImportance = []
-for i in range(100):
-    RFrun(Data)
+totalImportance = np.zeros(top+3, 'd')
+for i in range(500):
+    totalImportance += RFrun(Data)
+
+totalImportance = totalImportance/100
+
+toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
+toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
+
+f2 = open("TotalImportanceTop"+str(top)+".txt", "w+")
+for i in range(top+3):
+    f2.write(str(toPrint[i,:]) + '\n')
+
+toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
+
+f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w+")
+for i in range(top+3):
+    f2.write(str(toPrint[i,:]) + '\n')
