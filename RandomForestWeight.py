@@ -16,7 +16,9 @@ def getImportances(classifier, X, features_list, targetFile):
     
 
 #number of genes used
-top = 100
+top = 1000
+#number of loops
+N = 100
 
 #file imports
 Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
@@ -81,10 +83,10 @@ def RFrun(Data, Y2):
 
     #making the Classifiers
     clf_RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy',
-            max_depth=2, max_features='auto', max_leaf_nodes=None,
+            max_features='auto', max_leaf_nodes=None,
             min_impurity_decrease=0.0, min_impurity_split=None,
             min_samples_leaf=1, min_samples_split=2,
-            min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None,
+            min_weight_fraction_leaf=0.0, n_estimators=1000, n_jobs=None,
             oob_score=False, random_state=0, verbose=0, warm_start=False)
 
     #training
@@ -98,20 +100,20 @@ def RFrun(Data, Y2):
     return importanceArr
 
 totalImportance = np.zeros(top+3, 'd')
-for i in range(500):
+for i in range(N):
     totalImportance += RFrun(Data, Y2)
 
-totalImportance = totalImportance/100
+totalImportance = totalImportance/N
 
 toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
 toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 
-f2 = open("TotalImportanceTop"+str(top)+".txt", "w+")
+f2 = open("TotalImportanceTop"+str(top)+".txt", "w")
 for i in range(top+3):
     f2.write(str(toPrint[i,:]) + '\n')
 
 toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
 
-f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w+")
+f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w")
 for i in range(top+3):
     f2.write(str(toPrint[i,:]) + '\n')

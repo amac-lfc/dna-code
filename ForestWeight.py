@@ -14,7 +14,7 @@ def getImportances(classifier, X, features_list, targetFile):
     
 
 #number of genes used
-top = 100
+top = 10
 
 #file imports
 Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
@@ -33,7 +33,7 @@ for i in range(len(Y2Sorted)):
 
 f1 = open("SortedwName.txt", 'w+')
 for i in range(len(SigIndex)):
-    f1.write(GElist[SigIndex[i]] + "\t" + str(Y2CoreSig[SigIndex[i]])+'\n')
+    f1.write(GElist[SigIndex[i]] + "\t" + str(Y2CoreSig[SigIndex[i]]) + '\n')
 
 X2 = X[:, SigIndex[:top]]
 X2 = np.column_stack((X2, X[:,-3:]))
@@ -41,6 +41,10 @@ Data = np.column_stack((X2, Y2))
 
 #Feature List
 Features = np.append(GElist[SigIndex[:top]], np.array(['Age', 'Stage', 'Treatment']))
+
+for i in range(len(Features)):
+        if str(Features[i]) == "Age":
+                print("At index "+ str(i) + 'at creation')
 
 def RFrun(Data, Y2):
 
@@ -104,11 +108,19 @@ totalImportance = totalImportance/100
 toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
 toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 
+for i in range(len(Features)):
+        if str(Features[i]) == "Age":
+                print("At index "+ str(i) + " Before print")
+
 f2 = open("TotalImportanceTop"+str(top)+".txt", "w+")
 for i in range(top+3):
     f2.write(str(toPrint[i,:]) + '\n')
 
 toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
+
+for i in range(len(Features)):
+        if str(Features[i]) == "Age":
+                print("At index "+ str(i) + " Before 2nd print")
 
 f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w+")
 for i in range(top+3):
