@@ -5,6 +5,7 @@ from sklearn import svm
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
+import random as rd
 
 #importance fuction
 def getImportances(classifier, X, features_list, targetFile):
@@ -57,6 +58,31 @@ for i in range(len(SigIndex)):
 X2 = X[:, SigIndex[:top]]
 X2 = np.column_stack((X2, X[:,-3:]))
 Data = np.column_stack((X2, Y2))
+
+Y2  = Y2.astype(int)
+MaxY2 = np.max(Y2)
+Maxes = []
+mask = []
+for i in range(MaxY2+1):
+        mask.append(np.where(Y2==i)[0])
+        Maxes.append(len(mask[i]))
+        print("Y == {:d} has {:d} values".format(i,Maxes[i]))
+
+Max = np.max(Maxes)
+print(Max)
+for i in range(MaxY2+1):
+        for j in range(Max-Maxes[i]):
+                k = rd.choice(mask[i])
+                Data = np.concatenate((Data, Data[k,:][np.newaxis,:]), axis=0)
+
+Maxes = []
+mask = []
+for i in range(MaxY2+1):
+        mask.append(np.where(Data[:,-1]==i)[0])
+        Maxes.append(len(mask[i]))
+        print("Y == {:d} has {:d} values".format(i,Maxes[i]))
+
+
 
 #Feature List
 Features = np.append(GElist[SigIndex[:top]], np.array(['Age', 'Stage', 'Treatment']))
