@@ -10,8 +10,6 @@ import random as rd
 #importance fuction
 def getImportances(classifier, X, features_list, targetFile):
     importances = classifier.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in classifier.estimators_],
-                 axis=0)
     return(importances)
     
 
@@ -80,19 +78,19 @@ def RFrun(Data, Y2):
     Ytest = Data[int(Data.shape[0] * .8):, -1]
 
     #making the Classifiers
-    clf_RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy',
-            max_depth=2, max_features='auto', max_leaf_nodes=None,
+    clf_tree = tree.DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=None,
+            max_features=None, max_leaf_nodes=None,
             min_impurity_decrease=0.0, min_impurity_split=None,
             min_samples_leaf=1, min_samples_split=2,
-            min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None,
-            oob_score=False, random_state=0, verbose=0, warm_start=False)
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='best')
 
     #training
-    clf_RF = clf_RF.fit(Xtrain, Ytrain)
+    clf_tree = clf_tree.fit(Xtrain, Ytrain)
 
-    importanceArr = getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt')
+    importanceArr = getImportances(clf_tree, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt')
 
-    Ypredict = clf_RF.predict(Xtest)
+    Ypredict = clf_tree.predict(Xtest)
     print("Accuracy  is :", {accuracy_score(Ytest, Ypredict)})
 
     return importanceArr
