@@ -5,6 +5,7 @@ from sklearn import svm
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 import random as rd
 
 #importance fuction
@@ -34,12 +35,12 @@ def getImportancesTrees(classifier, X, features_list, targetFile):
 
 
 #number of genes used
-top = 50  
+top = 18000
 
 #file imports
 Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
-Y2 = np.load("FirePkl/Y2.npy")
 Y = np.load("FirePkl/Y.npy")
+Y = Y.astype(int)
 X = np.load("FirePkl/X.npy")
 X = X.astype(float)
 GElist = np.load("FirePkl/GElist.npy")
@@ -57,30 +58,35 @@ for i in range(len(SigIndex)):
 
 X2 = X[:, SigIndex[:top]]
 X2 = np.column_stack((X2, X[:,-3:]))
-Data = np.column_stack((X2, Y2))
+Data = np.column_stack((X2, Y))
 
-Y2  = Y2.astype(int)
-MaxY2 = np.max(Y2)
-Maxes = []
-mask = []
-for i in range(MaxY2+1):
-        mask.append(np.where(Y2==i)[0])
-        Maxes.append(len(mask[i]))
-        print("Y == {:d} has {:d} values".format(i,Maxes[i]))
+index = Y == -1
+Y[index] = 0
+index = Y > 0
+Y[index] = 1
 
-Max = np.max(Maxes)
-print(Max)
-for i in range(MaxY2+1):
-        for j in range(Max-Maxes[i]):
-                k = rd.choice(mask[i])
-                Data = np.concatenate((Data, Data[k,:][np.newaxis,:]), axis=0)
+# Y2  = Y2.astype(int)
+# MaxY2 = np.max(Y2)
+# Maxes = []
+# mask = []
+# for i in range(MaxY2+1):
+#         mask.append(np.where(Y2==i)[0])
+#         Maxes.append(len(mask[i]))
+#         print("Y == {:d} has {:d} values".format(i,Maxes[i]))
 
-Maxes = []
-mask = []
-for i in range(MaxY2+1):
-        mask.append(np.where(Data[:,-1]==i)[0])
-        Maxes.append(len(mask[i]))
-        print("Y == {:d} has {:d} values".format(i,Maxes[i]))
+# Max = np.max(Maxes)
+# print(Max)
+# for i in range(MaxY2+1):
+#         for j in range(Max-Maxes[i]):
+#                 k = rd.choice(mask[i])
+#                 Data = np.concatenate((Data, Data[k,:][np.newaxis,:]), axis=0)
+
+# Maxes = []
+# mask = []
+# for i in range(Max+1):
+#         mask.append(np.where(Data[:,-1]==i)[0])
+#         Maxes.append(len(mask[i]))
+#         print("Y == {:d} has {:d} values".format(i,Maxes[i]))
 
 
 
@@ -113,10 +119,13 @@ clf_tree = tree.DecisionTreeClassifier(class_weight=None, criterion='entropy', m
 
 clf_svm = svm.SVC(gamma = 'scale')
 
+clf_lr = LogisticRegression(solver= 'lbfgs', multi_class='auto', max_iter= 1000, tol= 1e-8 )
+
 #training
 clf_RF = clf_RF.fit(Xtrain, Ytrain)
 clf_tree = clf_tree.fit(Xtrain, Ytrain)
 clf_svm = clf_svm.fit(Xtrain, Ytrain)
+clf_lr = clf_lr.fit(Xtrain, Ytrain)
 
 getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt')
 getImportancesTrees(clf_tree, Xtrain, Features, "TreeFeatures_"+str(top)+ '.txt')
@@ -131,3 +140,5 @@ print("Accuracy of Trees is :", {accuracy_score(Ytest, Ypredict)})
 Ypredict = clf_svm.predict(Xtest)
 print("Accuracy of SVC is :", {accuracy_score(Ytest, Ypredict)})
 
+Ypredict = clf_lr.predict(Xtest)
+print("Accuracy of Logistical Regression is :", {accuracy_score(Ytest, Ypredict)})

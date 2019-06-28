@@ -10,67 +10,34 @@ import random as rd
 #importance fuction
 def getImportances(classifier, X, features_list, targetFile):
     importances = classifier.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in classifier.estimators_],
-                 axis=0)
     return(importances)
     
 
 #number of genes used
-top = 1000
+top = 'auto'
 #number of loops
-N = 100
+N = 50
 
 #file imports
-Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
-Y2 = np.load("FirePkl/Y2.npy")
+# Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
+
 Y = np.load("FirePkl/Y.npy")
+Y = Y.astype(int)
+index = Y == -1
+Y[index] = 0
+index = Y > 0
+Y[index] = 1
+
 X = np.load("FirePkl/X.npy")
 X = X.astype(float)
+
 GElist = np.load("FirePkl/GElist.npy")
 
-Y2Sorted = sorted(Y2CoreSig[:-4,1])
-Y2Sorted = np.array(Y2Sorted)
-
-SigIndex = np.zeros(len(Y2Sorted), dtype=int)
-for i in range(len(Y2Sorted)):
-    SigIndex[i] = np.where(Y2Sorted[i] == Y2CoreSig[:,1])[0][0]
-
-f1 = open("SortedwName.txt", 'w+')
-for i in range(len(SigIndex)):
-    f1.write(GElist[SigIndex[i]] + "\t" + str(Y2CoreSig[SigIndex[i]])+'\n')
-
-X2 = X[:, SigIndex[:top]]
-X2 = np.column_stack((X2, X[:,-3:]))
-Data = np.column_stack((X2, Y2))
+Data = np.column_stack((X, Y))
 
 #Feature List
-Features = np.append(GElist[SigIndex[:top]], np.array(['Age', 'Stage', 'Treatment']))
-
-def RFrun(Data, Y2):
-
-    Y2  = Y2.astype(int)
-    MaxY2 = np.max(Y2)
-    Maxes = []
-    mask = []
-    for i in range(MaxY2+1):
-            mask.append(np.where(Y2==i)[0])
-            Maxes.append(len(mask[i]))
-            # print("Y == {:d} has {:d} values".format(i,Maxes[i]))
-
-    Max = np.max(Maxes)
-    # print(Max)
-    for i in range(MaxY2+1):
-            for j in range(Max-Maxes[i]):
-                    k = rd.choice(mask[i])
-                    Data = np.concatenate((Data, Data[k,:][np.newaxis,:]), axis=0)
-
-    # Maxes = []
-    # mask = []
-    # for i in range(MaxY2+1):
-    #         mask.append(np.where(Data[:,-1]==i)[0])
-    #         Maxes.append(len(mask[i]))
-    #         print("Y == {:d} has {:d} values".format(i,Maxes[i]))
-
+Features = np.append(GElist[:], np.array(['Age', 'Stage', 'Treatment']))
+def RFrun(Data, Y, i):
 
     #shuffle
     np.random.shuffle(Data)
@@ -83,7 +50,7 @@ def RFrun(Data, Y2):
 
     #making the Classifiers
     clf_RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy',
-            max_features='auto', max_leaf_nodes=None,
+            max_features=top, max_leaf_nodes=None,
             min_impurity_decrease=0.0, min_impurity_split=None,
             min_samples_leaf=1, min_samples_split=2,
             min_weight_fraction_leaf=0.0, n_estimators=1000, n_jobs=None,
@@ -91,29 +58,30 @@ def RFrun(Data, Y2):
 
     #training
     clf_RF = clf_RF.fit(Xtrain, Ytrain)
-
     importanceArr = getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt')
 
     Ypredict = clf_RF.predict(Xtest)
-    print("Accuracy  is :", {accuracy_score(Ytest, Ypredict)})
-
+    print("Accuracy  is :", {accuracy_score(Ytest, Ypredict)}, i)
     return importanceArr
 
-totalImportance = np.zeros(top+3, 'd')
+totalImportance = np.zeros(len(Features), 'd')
 for i in range(N):
-    totalImportance += RFrun(Data, Y2)
+        totalImportance += RFrun(Data, Y, i)
 
 totalImportance = totalImportance/N
 
 toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
+
 toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 
+np.save("TotalImportanceTop" + str(top)+ ' .txt', toPrint, allow_pickle=True)
+
 f2 = open("TotalImportanceTop"+str(top)+".txt", "w")
-for i in range(top+3):
+for i in range(toPrint.shape[0]):
     f2.write(str(toPrint[i,:]) + '\n')
 
-toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
+# toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
 
-f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w")
-for i in range(top+3):
-    f2.write(str(toPrint[i,:]) + '\n')
+# # f3 = open("TotalImportanceTop"+str(top)+"ABC.txt", "w")
+# # for i in range(top+3):
+# #     f2.write(str(toPrint[i,:]) + '\n')
