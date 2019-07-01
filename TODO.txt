@@ -37,8 +37,9 @@ NEW TODO LIST
 
 2) Y=0,1 100 time with top 50 genes for Adv accuracy with SVM, RF, DT, LR
 
-3) Top 50 importance do a regression tree
+quintile seperation, top 50, 100times RF, SVM, LR, DT
 
-4) quintile seperation, top 50, 100times RF, SVM, LR, DT
+4) Top 50 importance do a regression tree
+
 
 5) Y = quinitle vs rest to get indeividual gene importance.

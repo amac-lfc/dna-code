@@ -1,22 +1,30 @@
 import numpy as np
 import numpy.core.defchararray as np_f
 
-RF = np.loadtxt("RFTopWeight.txt", dtype=str)
+RF = np.loadtxt("TotalImportanceTopQuintilesauto.txt", dtype=str)
 GElist = np.load("FirePkl/GElist.npy")
 
-GElist = np.append(GElist[:], np.array(['Age', 'Stage', 'Treatment']))
+#GElist = np.append(GElist[:], np.array(['Age', 'Stage', 'Treatment']))
 
-RF = np_f.replace(RF, "[", "")
-RF = np_f.replace(RF, "'", "")
+RF = np_f.replace(RF, "['", "")
+RF = np_f.replace(RF, '["', "")
 RF = np_f.replace(RF, "]", "")
+RF = [x[:-1] for x in RF[:,0]]
 
-print(RF.shape)
+Interface = np.zeros(len(RF)-3)
+k=0
+i=0
+while i < (len(RF)-3):
+        if (RF[k] == 'Treatment' or RF[k] == 'Age' or RF[k] == 'Stage'):
+                k = k+1
+        else:
+                temp = (np.where(RF[k] == GElist)[0])
+                print(RF[k])
+                print(temp)
+                Interface[i] = temp[0]
+                k += 1
+                i += 1
+        # print(i)
 
-Interface = np.zeros(len(RF[:,0]))
-for i in range(len(RF)):
-    temp = (np.where(RF[:, 0][i] == GElist)[0])
-    if len(temp) > 0:
-        Interface[i] = temp[0]
-
-
-np.save("FirePkl/RFTopInterface", Interface, allow_pickle=True)
+print(Interface)
+np.save("FirePkl/RFTopInterfaceQuintiles", Interface, allow_pickle=True)

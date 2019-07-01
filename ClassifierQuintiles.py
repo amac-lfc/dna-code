@@ -35,63 +35,25 @@ def getImportancesTrees(classifier, X, features_list, targetFile):
 
 
 #number of genes used
-top = 18000
+top = 100
 
 #file imports
-Y2CoreSig = np.load("FirePkl/Y2CoreSig.npy")
 Y = np.load("FirePkl/Y.npy")
 Y = Y.astype(int)
 X = np.load("FirePkl/X.npy")
 X = X.astype(float)
 GElist = np.load("FirePkl/GElist.npy")
+RFTopInterface = np.load("FirePkl/RFTopInterfaceQuintiles.npy")
+RFTopInterface = RFTopInterface.astype(int)
 
-Y2Sorted = sorted(Y2CoreSig[:-4,1])
-Y2Sorted = np.array(Y2Sorted)
-
-SigIndex = np.zeros(len(Y2Sorted), dtype=int)
-for i in range(len(Y2Sorted)):
-    SigIndex[i] = np.where(Y2Sorted[i] == Y2CoreSig[:,1])[0][0]
-
-f1 = open("SortedwName.txt", 'w+')
-for i in range(len(SigIndex)):
-    f1.write(GElist[SigIndex[i]] + "\t" + str(Y2CoreSig[SigIndex[i]])+'\n')
-
-X2 = X[:, SigIndex[:top]]
+X2 = X[:, RFTopInterface[:top]]
 X2 = np.column_stack((X2, X[:,-3:]))
 Data = np.column_stack((X2, Y))
 
-index = Y == -1
-Y[index] = 0
-index = Y > 0
-Y[index] = 1
-
-# Y2  = Y2.astype(int)
-# MaxY2 = np.max(Y2)
-# Maxes = []
-# mask = []
-# for i in range(MaxY2+1):
-#         mask.append(np.where(Y2==i)[0])
-#         Maxes.append(len(mask[i]))
-#         print("Y == {:d} has {:d} values".format(i,Maxes[i]))
-
-# Max = np.max(Maxes)
-# print(Max)
-# for i in range(MaxY2+1):
-#         for j in range(Max-Maxes[i]):
-#                 k = rd.choice(mask[i])
-#                 Data = np.concatenate((Data, Data[k,:][np.newaxis,:]), axis=0)
-
-# Maxes = []
-# mask = []
-# for i in range(Max+1):
-#         mask.append(np.where(Data[:,-1]==i)[0])
-#         Maxes.append(len(mask[i]))
-#         print("Y == {:d} has {:d} values".format(i,Maxes[i]))
-
-
 
 #Feature List
-Features = np.append(GElist[SigIndex[:top]], np.array(['Age', 'Stage', 'Treatment']))
+Features = np.append(GElist[RFTopInterface[:top]], np.array(['Age', 'Stage', 'Treatment']))
+
 
 #shuffle
 np.random.shuffle(Data)

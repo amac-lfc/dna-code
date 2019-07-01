@@ -77,7 +77,7 @@ toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 np.save("TotalImportanceTop" + str(top)+ ' .txt', toPrint, allow_pickle=True)
 
 f2 = open("TotalImportanceTop"+str(top)+".txt", "w")
-for i in range(toPrint.shape[0]):
+for i in range(toPrint.shape[0])
     f2.write(str(toPrint[i,:]) + '\n')
 
 # toPrint = toPrint[toPrint[:,0].argsort()[::-1]]
