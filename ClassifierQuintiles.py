@@ -35,7 +35,7 @@ def getImportancesTrees(classifier, X, features_list, targetFile):
 
 
 #number of genes used
-top = 100
+top = 500
 
 #file imports
 Y = np.load("FirePkl/Y.npy")

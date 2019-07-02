@@ -18,7 +18,7 @@ def getImportances(classifier, X, features_list, targetFile):
     
 
 #number of genes used
-top = 50
+top = 10
 
 #file imports
 RF = np.load("FirePkl/RFTopInterface.npy")

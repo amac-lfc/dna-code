@@ -17,20 +17,27 @@ def getImportances(classifier, X, features_list, targetFile):
 top = 'auto'
 #number of loops
 N = 50
+#target quintile
+Quintile = 3
 
 #file imports
-Y = np.load("FirePkl/Y.npy")
+Y = np.load("FirePkl/YQuintiles.npy")
 Y = Y.astype(int)
 
-index = Y > 0
-Y = Y[index]
+
+index = Y!=Quintile
+Y[index] = 0
+
 
 X = np.load("FirePkl/X.npy")
 X = X.astype(float)
-X = X[index, :]
+X = X[Y, :]
 
 
 GElist = np.load("FirePkl/GElist.npy")
+
+where0 = np.where(Y==0)[0]
+whereQ = np.where(Y==Quintile)[0]
 
 Data = np.column_stack((X, Y))
 
@@ -38,14 +45,21 @@ Data = np.column_stack((X, Y))
 Features = np.append(GElist[:], np.array(['Age', 'Stage', 'Treatment']))
 def RFrun(Data, Y, i):
 
+    Data2 = np.copy(Data)
+
+    for k in range(len(where0)-len(whereQ)):
+        temp = np.random.choice(whereQ)
+        Data2 = np.vstack((Data2, Data2[temp,:]))
+
+
     #shuffle
-    np.random.shuffle(Data)
+    np.random.shuffle(Data2)
 
     #train and test datasets
-    Xtrain = Data[:int(Data.shape[0] * .8), :-1]
-    Ytrain = Data[:int(Data.shape[0] * .8), -1]
-    Xtest = Data[int(Data.shape[0] * .8):, :-1]
-    Ytest = Data[int(Data.shape[0] * .8):, -1]
+    Xtrain = Data2[:int(Data2.shape[0] * .8), :-1]
+    Ytrain = Data2[:int(Data2.shape[0] * .8), -1]
+    Xtest = Data2[int(Data2.shape[0] * .8):, :-1]
+    Ytest = Data2[int(Data2.shape[0] * .8):, -1]
 
     #making the Classifiers
     clf_RF = tree.DecisionTreeRegressor(max_depth= None)
@@ -68,8 +82,8 @@ toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
 
 toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 
-np.save("FirePkl/TotalImportanceTopNonBinary", toPrint, allow_pickle=True)
+np.save("TotalImportance" + str(top)+ "forQuintile" + str(Quintile), toPrint, allow_pickle=True)
 
-f2 = open("TotalImportanceTopNonBinary"+str(top)+".txt", "w")
+f2 = open("TotalImportance" + str(top)+ "forQuintile" + str(Quintile), "w")
 for i in range(toPrint.shape[0]):
     f2.write(str(toPrint[i,:]) + '\n')
