@@ -2,12 +2,11 @@ import numpy as np
 import pandas as pd
 
 Y = np.load("FirePkl/Y.npy")
+X = np.load("FirePkl/X.npy")
 Y = Y.astype(int)
 index = Y > 0
 YD = Y[index]
-
-
-print(YD)
+XD = X[index, :]
 
 np.save("YD.npy", YD, )
 
@@ -28,3 +27,4 @@ for i in range(len(YD)):
 YD = YD.astype(int)
 
 np.save("FirePkl/YQuintiles", YD, allow_pickle= True)
+np.save("FirePkl/XDead", XD, allow_pickle=True)

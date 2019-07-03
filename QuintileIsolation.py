@@ -18,7 +18,7 @@ top = 'auto'
 #number of loops
 N = 50
 #target quintile
-Quintile = 3
+Quintile = 1
 
 #file imports
 Y = np.load("FirePkl/YQuintiles.npy")
@@ -29,9 +29,8 @@ index = Y!=Quintile
 Y[index] = 0
 
 
-X = np.load("FirePkl/X.npy")
+X = np.load("FirePkl/XDead.npy")
 X = X.astype(float)
-X = X[Y, :]
 
 
 GElist = np.load("FirePkl/GElist.npy")

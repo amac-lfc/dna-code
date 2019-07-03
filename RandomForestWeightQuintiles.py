@@ -23,10 +23,8 @@ Y = np.load("FirePkl/YQuintiles.npy")
 Y = Y.astype(int)
 
 
-X = np.load("FirePkl/X.npy")
+X = np.load("FirePkl/XDead.npy")
 X = X.astype(float)
-X = X[Y, :]
-
 
 GElist = np.load("FirePkl/GElist.npy")
 
@@ -46,13 +44,19 @@ def RFrun(Data, Y, i):
     Ytest = Data[int(Data.shape[0] * .8):, -1]
 
     #making the Classifiers
-    clf_RF = tree.DecisionTreeRegressor(max_depth= None)
+    clf_RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None,
+            oob_score=False, random_state=0, verbose=0, warm_start=False)
 
     #training
     clf_RF.fit(Xtrain, Ytrain)
     importanceArr = getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_NonBinary_"+str(top)+ '.txt')
 
     Ypredict = clf_RF.predict(Xtest)
+    print("Accuracy of Random Forest is :", {accuracy_score(Ytest, Ypredict)})
     print(i)
     return importanceArr
 
@@ -66,7 +70,7 @@ toPrint = np.column_stack((Features[:] ,(totalImportance[:])))
 
 toPrint = toPrint[toPrint[:,1].argsort()[::-1]]
 
-np.save("TotalImportanceQuintiles" + str(top)+ ' .txt', toPrint, allow_pickle=True)
+np.save("TotalImportanceQuintiles" + str(top), toPrint, allow_pickle=True)
 
 f2 = open("TotalImportanceTopQuintiles"+str(top)+".txt", "w")
 for i in range(toPrint.shape[0]):

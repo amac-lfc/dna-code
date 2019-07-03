@@ -48,7 +48,7 @@ np.random.shuffle(Data)
 
 DataTrain =  Data[:int(Data.shape[0] * .8), :]
 DataTest = Data[int(Data.shape[0] * .8):, :]
-DataTrain = DataTrain[DataTrain[:,-1].argsort()]
+# DataTrain = DataTrain[DataTrain[:,-1].argsort()]
 DataTest = DataTest[DataTest[:,-1].argsort()]
 
 #train and test datasets
