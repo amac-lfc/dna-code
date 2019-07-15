@@ -1,45 +1,11 @@
-1: Make training pool with normal distribution however the test can be the normal distribution
+TODO 
 
-2: independatn samplses t test for change in gene expression for each gene(top 5%)
-	BonFeronies correction (tukeys correction)
+1 Cross correlation matrix(figure 3 from the paper)
 
-3: logisical regression for full gene pool with Y
+2 Tree, RF, classifer on paper data
 
-4: find more statistical tests to examin statistical relivance
+3 correltation with fire broswe between methylation and expression
 
-Compute adv feature expression by quintile per patient 
+4 Load analysis COAD
 
-CONRADS TODO:
-
-Quintile distrabution of DTD
-
-Entropy to say what catagory it contibutes for
-
-Identify a set of 48 or 96 genes that are good quintile preditors
-
-Identify set of genes what are good predictors for live or die
-
-do the same genes come up for diffrence Cancers
-
-
-#Look into unsupervied higherarchical clustering
-
-
-
-FOR REPORT 
-make figure of contribution each gene gives
-
-
-
-NEW TODO LIST
-
-1) Y = 0,1 Random forest 1K time with all genes, pick top 50 importance genes
-
-2) Y=0,1 100 time with top 50 genes for Adv accuracy with SVM, RF, DT, LR
-
-quintile seperation, top 50, 100times RF, SVM, LR, DT
-
-4) Top 50 importance do a regression tree
-
-
-5) Y = quinitle vs rest to get indeividual gene importance.
+5 look at neural network

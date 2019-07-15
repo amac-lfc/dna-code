@@ -3,7 +3,7 @@ import numpy.core.defchararray as np_f
 
 RF = np.load("TotalImportanceQuintilesauto.npy")
 GElist = np.load("FirePkl/GElist.npy")
-
+RF = RF[:,0]
 Interface = np.zeros(len(RF)-3)
 k=0
 i=0

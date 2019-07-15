@@ -38,39 +38,49 @@ def getImportancesTrees(classifier, X, features_list, targetFile):
 top = 100
 
 #file imports
-Y = np.load("FirePkl/Y.npy")
+Y = np.load("FirePkl/COADY.npy")
 Y = Y.astype(int)
-X = np.load("FirePkl/X.npy")
+X = np.load("FirePkl/COADX.npy")
 X = X.astype(float)
-GElist = np.load("FirePkl/GElist.npy")
-RFTopInterface = np.load("FirePkl/RFTopInterface.npy")
-RFTopInterface = RFTopInterface.astype(int)
+GElist = np.load("FirePkl/COADGenes.npy")
 
-X2 = X[:, RFTopInterface[:top]]
-X2 = np.column_stack((X2, X[:,-3:]))
-Data = np.column_stack((X2, Y))
+alive = np.where(Y == 1)[0]
+dead = np.where(Y == 0)[0]
 
-index = Y == -1
-Y[index] = 0
-index = Y > 0
-Y[index] = 1
+Data = np.column_stack((X, Y))
+
+# index = Y == -1
+# Y[index] = 0
+# index = Y > 0
+# Y[index] = 1
 
 #Feature List
-Features = np.append(GElist[RFTopInterface[:top]], np.array(['Age', 'Stage', 'Treatment']))
-
+# Features = np.append(GElist[RFTopInterface[:top]], np.array(['Age', 'Stage', 'Treatment']))
+Features = np.copy(GElist)
 
 #shuffle
 np.random.shuffle(Data)
 
 #train and test datasets
-Xtrain = Data[:int(Data.shape[0] * .8), :-1]
-Ytrain = Data[:int(Data.shape[0] * .8), -1]
-Xtest = Data[int(Data.shape[0] * .8):, :-1]
-Ytest = Data[int(Data.shape[0] * .8):, -1]
+test = Data[int(Data.shape[0] * .8):, :]
+train = Data[:int(Data.shape[0] * .8), :]
+
+
+where0 = np.where(train[:, -1]==0)[0]
+whereQ = np.where(train[:, -1]==1)[0]
+for k in range(int(len(whereQ)-len(where0))):
+    temp = np.random.choice(where0)
+    train = np.vstack((train, train[temp,:]))
+
+#train and test datasets
+Xtest = test[:, :-1]
+Ytest = test[:, -1]
+Xtrain = train[:, :-1]
+Ytrain = train[:, -1]
 
 #making the Classifiers
 clf_RF = RandomForestClassifier(bootstrap=True, class_weight=None, criterion='entropy',
-            max_depth=2, max_features='auto', max_leaf_nodes=None,
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
             min_impurity_decrease=0.0, min_impurity_split=None,
             min_samples_leaf=1, min_samples_split=2,
             min_weight_fraction_leaf=0.0, n_estimators=100, n_jobs=None,
@@ -97,14 +107,41 @@ getImportances(clf_RF, Xtrain, Features, "RandomForestFeatures_"+str(top)+ '.txt
 getImportancesTrees(clf_tree, Xtrain, Features, "TreeFeatures_"+str(top)+ '.txt')
 # getImportances(clf_svm, Xtrain, Features, "SVMFeatures_"+str(top)+ '.txt')
 
+#alive dead percentages
+alive = np.where(Y == 1)[0]
+dead = np.where(Y == 0)[0]
+print("Percent of patients alive",len(alive)/len(Y))
+print("Percent of paitents dead", len(dead)/len(Y))
+alive = np.where(Ytest == 1)[0]
+dead = np.where(Ytest == 0)[0]
+print("Percent of patients alive TEST",len(alive)/len(Ytest))
+print("Percent of paitents dead TEST", len(dead)/len(Ytest))
+alive = np.where(Ytrain == 1)[0]
+dead = np.where(Ytrain == 0)[0]
+print("Percent of patients alive TRAIN",len(alive)/len(Ytrain))
+print("Percent of paitents dead TRAIN", len(dead)/len(Ytrain))
+
+# num of features
+print('Number of Features : ', len(GElist))
+
+
+#prediction results
 Ypredict = clf_RF.predict(Xtest)
+print("Prediction",Ypredict)
+print("Actual",Ytest)
 print("Accuracy of Random Forest is :", {accuracy_score(Ytest, Ypredict)})
 
 Ypredict = clf_tree.predict(Xtest)
+print("Prediction",Ypredict)
+print("Actual",Ytest)
 print("Accuracy of Trees is :", {accuracy_score(Ytest, Ypredict)})
 
 Ypredict = clf_svm.predict(Xtest)
+print("Prediction",Ypredict)
+print("Actual",Ytest)
 print("Accuracy of SVC is :", {accuracy_score(Ytest, Ypredict)})
 
 Ypredict = clf_lr.predict(Xtest)
+print("Prediction",Ypredict)
+print("Actual",Ytest)
 print("Accuracy of Logistical Regression is :", {accuracy_score(Ytest, Ypredict)})
