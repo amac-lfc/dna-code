@@ -1,9 +1,5 @@
 TODO 
 
-1 Cross correlation matrix(figure 3 from the paper)
-
-2 Tree, RF, classifer on paper data
-
 3 correltation with fire broswe between methylation and expression
 
 4 Load analysis COAD
