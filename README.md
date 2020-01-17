@@ -1,5 +1,8 @@
-# dna-code
-DNA analysis (code)
+# dna-code  
+The first question we asked this summer was is it possible to predict gene expression through methylation of that same gene. Methylation is a chemical modification of the DNA which effects how the gene is read without changing the specific sequence of the gene. The reading and translation of the gene from genetic code into proteins can be measured in RNA abundance. RNA is only produced if the gene is to be turned into a protein. The biological core behind our question was that methylation, if it’s on a gene promotor site, can inhibit gene expression.
+We followed this up with a question of predicting patient survival through methylation, gene expression, and various clinical data. We tried to predict several different types of patient's survival: (1) Binary, did the patient live or die; (2) Nonbinary, how many days did the patient survive; and (3) Quintile predictions, which quintile of life expectancy the patient fell into. Using the listed data we should be able to predict severity of the cancer and the overall health of the patient allowing us to predict survival status.
+
+
 
 
 ## <strong>Installs</strong>
@@ -78,7 +81,8 @@ Remark: The Random Forest showed a mean accuracy of 75.5% which is greater than 
 We also put their data through a neural network to see if it would be better at classifying the patient. The neural network had a significantly worse and more varying accuracy of around 50% at worst and 60% at best.
 
 ### 3.3 Experiments with Ovarian Cancer
-Ovarian Cancer (OV): prediction of days to death separated into quintiles  
+Ovarian Cancer (OV): prediction of days to death separated into quintiles    
+
 |Method | Accuracy |  
 |----|-----|  
 |Quintile Random Forest OV|21.3%|     
@@ -145,5 +149,5 @@ Using this formula I tried to replicate the Kaplan-Meier Survival Analysis using
 
 ![SurivivalReplication](SurvivalPrediction_OurData.png)
 
-![Papers Survival Curve](papers_survival_analysis.png)
+![Papers Survival Curve](papers_survival_analysis.png)  
 The first figure is the survival analysis I produced and the second is the survival analysis the paper reports. Although the two groups are distinct we weren’t able to replicate the survival analysis. A potential reason for this is possibly the same reason why out WCGNA Hub Gene analysis failed. A majority of our replicated data although it did have similar patters to the data reported by the paper our data always had a vastly different sense of scale comparatively. A second possible reason is that the data set under the cBioPortal changed. Although the patient ID are matching and the data is sourced from the same location, PanCancerAtlas, the data itself could have been updated.  A third potential reason is my use of python instead of the glmet package. The statistical method preformed is the same in both packages but still could be a potential source of error. 
