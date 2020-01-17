@@ -46,13 +46,13 @@ The output of all classifier files is in the format below and repeats for every 
 "Accuracy of (Prediction Algorithm Name) : %"
 
 ## <strong> Head and Neck Cancer Data Sets</strong>
-The data set was pulled from the [Head and Neck Squamous Cell Carcinoma TCGA PanCancer data](https://www.cbioportal.org/study/summary?id=hnsc_tcga_pan_can_atlas_2018). The original data is at from the cBioPortal HNSC data set sourced from the Pan Cancer Atlas. The first problem occurred when we found out that this data set is ever changing. The source paper provided a Clinical data file however. From this clinical data file I was able to pull patient ID codes and use that to filter out this data set. This left me with a total of 504 patients, a number that matched the papers. With the original patient list obtained I Then needed to clean the data in accordance with the paper. First step was to use the DEseq2 R package to normalize the data set. Then I needed to prune for outliers by using the DEseq2 package at a |log2 fold|>1 change. After this we were left with 477 sample.
+The data set was pulled from the [Head and Neck Squamous Cell Carcinoma TCGA PanCancer data](https://www.cbioportal.org/study/summary?id=hnsc_tcga_pan_can_atlas_2018). The original data is at from the cBioPortal HNSC data set sourced from the Pan Cancer Atlas. The first problem occurred when we found out that this data set is ever changing. The source paper provided a Clinical data file however. From this clinical data file I was able to pull patient ID codes and use that to filter out this data set. This left me with a total of 504 patients, a number that matched the papers. With the original patient list obtained I Then needed to clean the data in accordance with the paper. First step was to use the DEseq2 R package to normalize the data set. Then I needed to prune for outliers by using the DEseq2 package at a |log2 fold|>1 change. After this we were left with 477 samples.
 
 
 ## <strong>Explanation</strong>
 
 ### <strong>Replication with Lung Adenocarcinoma</strong> 
-We replicated the paper “Using epigenomics data to predict gene expression in lung cancer, Li, Ching, Huang, Garmire” [1], which predicted if a gene was activated or not using methylation data. First was to replicate a cross correlation matrix of their sixty-seven top features. The features are the different genes, histones, and methylation for each patient. The paper itself [1] already ran a feature selection that we replicated as seen below. This is used to show which features should be used for the prediction.
+We replicated the paper “Using epigenomics data to predict gene expression in lung cancer, Li, Ching, Huang, Garmire”, which predicted if a gene was activated or not using methylation data. First was to replicate a cross correlation matrix of their sixty-seven top features. The features are the different genes, histones, and methylation for each patient. The paper itself  already ran a feature selection that we replicated as seen below. This is used to show which features should be used for the prediction.
 
 >Li J, Ching T, Huang S, Garmire LX. Using epigenomics data to predict gene expression in lung cancer. BMC Bioinformatics. 2015;16 Suppl 5(Suppl 5):S10. doi:10.1186/1471-2105-16-S5-S10
 [Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402699/)
@@ -60,7 +60,7 @@ We replicated the paper “Using epigenomics data to predict gene expression in 
 
 ![Our Matrix](CrossCorrelatonHeatMap.png)
 
-Although inverted, we were able to successfully replicate the matrix, next step was to get a similar accuracy score. Using these 67 features we were able to predict the survival of a patient in the case of lung cancer. Ours results (see table below) match the accuracy of the article [1] which is around 75%-78%. 
+Although inverted, we were able to successfully replicate the matrix, next step was to get a similar accuracy score. Using these 67 features we were able to predict the survival of a patient in the case of lung cancer. Ours results (see table below) match the accuracy of the article which is around 75%-78%. 
 Lung Cancer (LUAD): prediction of increase or decrease in Gene Expression
 |Method| Accuracy 
 |---|--- 
@@ -108,7 +108,11 @@ Colon Cancer (COAD): prediction between deceased or alive
 Remark: The Random Forest to predict life or death was has a mean accuracy of 72%, the Logistical Regression has a mean accuracy of 62%. Both are more accurate then choosing randomly which has a mean accuracy of 50.4%
 
  COAD quickly became the focus of our work. We, then, try to see which gene was the most important for predicting life or death. We ran a principal component analysis on the COAD data set. Below is the PCA results with all alive patients in blue and dead patients in red. 
+
+![OurPCAresults](PCAresults.png)
 This was the only significant separation in the PCA. The PCA was not grouped on survival of the patient and so to further narrow down what exactly was separated we ran a LOD analysis to see which genes were the most important. 
+
+![PCAgenes](PCAgenes.png)
 The genes on the far left were the most important and they were linked to a wide variety of genes with individually distinct purposes, none of which relate to COAD cancer. 
 
 
@@ -116,16 +120,16 @@ The genes on the far left were the most important and they were linked to a wide
 
 ### <strong>Data Set Managment</strong>
 ![Our Outliers](CountDataOutliers.png)
-![Papers Outliers](PaperOutliers.jpg)
+![PapersOutliers](PaperOutliers.png)
 Above is two images of the Sample Clustering diagrams. The first image is the one we obtained and the second is the one provided by the paper. Although the mesures are seprate the patters and outliers listed are the same. 
 
 ### 4 WCGNA hub gene analysis
 The next step was the replication of the WCGNA hub gene analysis. This was preformed using the WCGNA module in R. The package is listed under both R Biomanager and in a standalone version. The paper does not specify which one used however from what I have found they should be the same package with different sources, I was unable to confirm they were both the same version. I used the stand-alone version for replication. WCGNA package was applied to the dataset with β = 4 (scale free R­2 = 0.93). 
-![Our Mean Connectivity](CountDataConnectivity.png)
-![Paper Mean Connectivity](PaperMeanConnectivity.jpg)
+![Our Mean Connectivity](MeanConectivitylog2.png)
+![Paper Mean Connectivity](PaperConnectivity.png)
 
 ![Our Cluster Dendogram](ClusterDendogramLog2.png)
-![Paper Cluster Dendogram](PaperClusterDendogram.jpg)
+![Paper Cluster Dendogram](PaperClusterDendrogram.png)
 
 First is a graph of the mean network connectivity between genes with the first figure being my figure and the second being the one the paper reports. Again we a see a similar trend to out outlier analysis. The pattern remains in tact with out scale being wildly different. After that was the WCGNA hub gene analysis, both are titles Cluster Dendogram. The first is my reproduction and the second is the one the paper reports. These two are wildy different and do not report the same genes. Possible reasons for this is that the origional paper does not share its code so I don’t know futher speficications on the settings used. The paper reportes to have have isolated 16 modules from the Cluster Dendrogram above however they do not mention any of them other than cluster yellow. They also do not mention how these 16 clusters were chosen and they link to the above figure in lue of an explination. With this I was unable to replicate the moduels selected by the WCGNA package. 
 
@@ -139,6 +143,7 @@ In the paper they give a simple algorithm for there prediction model. The Regres
 
 Using this formula I tried to replicate the Kaplan-Meier Survival Analysis using the python package lifelines. Some resolved issues that should be noted is a change in gene name. FOXL2 is listed in the data set as C3orf72 so code and dataset management use C3ord72.This are the same genes being used in the prediction, but the data set has them listed under different names. All gene names and gene aliases are sourced from genecards.org, a sight run by the Weizmann Institute of Science and LifeMap Sciences.
 
+![SurivivalReplication](SurvivalPrediction_OurData.png)
 
-
+![Papers Survival Curve](papers_survival_analysis.png)
 The first figure is the survival analysis I produced and the second is the survival analysis the paper reports. Although the two groups are distinct we weren’t able to replicate the survival analysis. A potential reason for this is possibly the same reason why out WCGNA Hub Gene analysis failed. A majority of our replicated data although it did have similar patters to the data reported by the paper our data always had a vastly different sense of scale comparatively. A second possible reason is that the data set under the cBioPortal changed. Although the patient ID are matching and the data is sourced from the same location, PanCancerAtlas, the data itself could have been updated.  A third potential reason is my use of python instead of the glmet package. The statistical method preformed is the same in both packages but still could be a potential source of error. 
