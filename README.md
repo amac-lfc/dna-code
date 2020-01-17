@@ -55,10 +55,11 @@ The data set was pulled from the [Head and Neck Squamous Cell Carcinoma TCGA Pan
 ## <strong>Explanation</strong>
 
 ### <strong>Replication with Lung Adenocarcinoma</strong> 
-We replicated the paper “Using epigenomics data to predict gene expression in lung cancer, Li, Ching, Huang, Garmire”, which predicted if a gene was activated or not using methylation data. First was to replicate a cross correlation matrix of their sixty-seven top features. The features are the different genes, histones, and methylation for each patient. The paper itself  already ran a feature selection that we replicated as seen below. This is used to show which features should be used for the prediction.
 
 >Li J, Ching T, Huang S, Garmire LX. Using epigenomics data to predict gene expression in lung cancer. BMC Bioinformatics. 2015;16 Suppl 5(Suppl 5):S10. doi:10.1186/1471-2105-16-S5-S10
 [Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402699/)
+
+We replicated the paper “Using epigenomics data to predict gene expression in lung cancer, Li, Ching, Huang, Garmire”, which predicted if a gene was activated or not using methylation data. First was to replicate a cross correlation matrix of their sixty-seven top features. The features are the different genes, histones, and methylation for each patient. The paper itself  already ran a feature selection that we replicated as seen below. This is used to show which features should be used for the prediction.
 
 
 ![Our Matrix](CrossCorrelatonHeatMap.png)  
@@ -82,7 +83,7 @@ Lung Cancer (LUAD): prediction of increase or decrease in Gene Expression
 Remark: The Random Forest showed a mean accuracy of 75.5% which is greater than choosing randomly at 51.5%. We were able to predict if a gene was activated or not.
 We also put their data through a neural network to see if it would be better at classifying the patient. The neural network had a significantly worse and more varying accuracy of around 50% at worst and 60% at best.
 
-### 3.3 Experiments with Ovarian Cancer
+###  Experiments with Ovarian Cancer
 Ovarian Cancer (OV): prediction of days to death separated into quintiles    
 
 |Method | Accuracy |  
@@ -98,7 +99,7 @@ Ovarian Cancer (OV): prediction of days to death separated into quintiles
 Remark: The Random Forest algorithm, which is our most accurate one at 21.3%, is not as accurate as choosing randomly at 21.7%.
 We later tested our algorithms onto Colon adenocarcinoma (COAD). The main issue was that we had a large amount of missing clinical data, like treatment type and age of patient, that were previously a heavily influential predictor. COAD, however, had 22 % above chance accuracy for binary Random Forest prediction and binary Logistical Regression in some cases.
 
-### 3.4 Application of model to Colon Adenocarcinoma
+### Application of model to Colon Adenocarcinoma
 
 Colon Cancer (COAD): prediction between deceased or alive  
   
@@ -125,8 +126,12 @@ This was the only significant separation in the PCA. The PCA was not grouped on 
 The genes on the far left were the most important and they were linked to a wide variety of genes with individually distinct purposes, none of which relate to COAD cancer. 
 
 
-## Paper 2
+## Six-mRNA Prognostic Model Replication
 
+>Tian S, Meng G, Zhang W. A six-mRNA prognostic model to predict survival in head and neck squamous cell carcinoma. Cancer Manag Res. 2018;11:131–142. Published 2018 Dec 20. doi:10.2147/CMAR.S185875
+
+ We moved on to a new paper that reported the ability to develop a prognosti model for Head and Neck cancers using a WCGNA hub gene analysis. We tried to replicate both the method they used to develop the model and also to use they model they generated and checks it's prognostic ability.   
+ 
 ### <strong>Data Set Managment</strong>
 ![Our Outliers](CountDataOutliers.png)  
 
@@ -134,7 +139,7 @@ The genes on the far left were the most important and they were linked to a wide
 
 Above is two images of the Sample Clustering diagrams. The first image is the one we obtained and the second is the one provided by the paper. Although the mesures are seprate the patters and outliers listed are the same. 
 
-### 4 WCGNA hub gene analysis
+### WCGNA hub gene analysis
 The next step was the replication of the WCGNA hub gene analysis. This was preformed using the WCGNA module in R. The package is listed under both R Biomanager and in a standalone version. The paper does not specify which one used however from what I have found they should be the same package with different sources, I was unable to confirm they were both the same version. I used the stand-alone version for replication. WCGNA package was applied to the dataset with β = 4 (scale free R­2 = 0.93). 
 ![Our Mean Connectivity](MeanConectivitylog2.png)  
 
@@ -149,7 +154,7 @@ First is a graph of the mean network connectivity between genes with the first f
 
 
 
-### 4.3 Replication of given prediction algorithm
+### Replication of given prediction algorithm
 
 In the paper they give a simple algorithm for there prediction model. The Regression Model was trained on the hub genes obtained from the WCGNA Hub Gene Analysis. Their prediction model results in the separation of high and low risk cases. This is performed by a Lasso Cox regression model using the R package glmnet. What the Lasso regression was trained to predict is not entirely clear. The main paper does not explicitly state however the figures provide in the main paper show the Risk Score groups derived from this Lasso regression being plotted on a Overall Survival Kaplan Myer Survival Analysis with the time scale being months lived. The paper states the formula used to get Risk Score that was derived from the Lasso Regression is below. 
  RiskScore = (0.0292 * ExpressionFOXL2NB ) + ( 0.0381 * EpressionPCOLCE2) + (-0.0031 * ExpressionSPINK6) + (0.0497 * ExpressionULBP2) + (-0.054 * ExpressionKCNJI8) + (-0.2872 * ExpressionRFPLI)
