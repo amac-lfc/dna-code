@@ -61,8 +61,9 @@ We replicated the paper “Using epigenomics data to predict gene expression in 
 [Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402699/)
 
 
-![Our Matrix](CrossCorrelatonHeatMap.png)
-![PaperHeatmap](Paper1HeatMap.png)
+![Our Matrix](CrossCorrelatonHeatMap.png)  
+![PaperHeatmap](Paper1HeatMap.png)   
+
 Although inverted, we were able to successfully replicate the matrix, next step was to get a similar accuracy score. Using these 67 features we were able to predict the survival of a patient in the case of lung cancer. Ours results (see table below) match the accuracy of the article which is around 75%-78%. 
 Lung Cancer (LUAD): prediction of increase or decrease in Gene Expression
   
@@ -115,27 +116,34 @@ Remark: The Random Forest to predict life or death was has a mean accuracy of 72
 
  COAD quickly became the focus of our work. We, then, try to see which gene was the most important for predicting life or death. We ran a principal component analysis on the COAD data set. Below is the PCA results with all alive patients in blue and dead patients in red. 
 
-![OurPCAresults](PCAresults.png)
+![OurPCAresults](PCAresults.png)    
+
 This was the only significant separation in the PCA. The PCA was not grouped on survival of the patient and so to further narrow down what exactly was separated we ran a LOD analysis to see which genes were the most important. 
 
-![PCAgenes](PCAgenes.png)
+![PCAgenes](PCAgenes.png)    
+
 The genes on the far left were the most important and they were linked to a wide variety of genes with individually distinct purposes, none of which relate to COAD cancer. 
 
 
 ## Paper 2
 
 ### <strong>Data Set Managment</strong>
-![Our Outliers](CountDataOutliers.png)
-![PapersOutliers](PaperOutliers.png)
+![Our Outliers](CountDataOutliers.png)  
+
+![PapersOutliers](PaperOutliers.png)  
+
 Above is two images of the Sample Clustering diagrams. The first image is the one we obtained and the second is the one provided by the paper. Although the mesures are seprate the patters and outliers listed are the same. 
 
 ### 4 WCGNA hub gene analysis
 The next step was the replication of the WCGNA hub gene analysis. This was preformed using the WCGNA module in R. The package is listed under both R Biomanager and in a standalone version. The paper does not specify which one used however from what I have found they should be the same package with different sources, I was unable to confirm they were both the same version. I used the stand-alone version for replication. WCGNA package was applied to the dataset with β = 4 (scale free R­2 = 0.93). 
-![Our Mean Connectivity](MeanConectivitylog2.png)
-![Paper Mean Connectivity](PaperConnectivity.png)
+![Our Mean Connectivity](MeanConectivitylog2.png)  
 
-![Our Cluster Dendogram](ClusterDendogramLog2.png)
-![Paper Cluster Dendogram](PaperClusterDendrogram.png)
+![Paper Mean Connectivity](PaperConnectivity.png)  
+
+![Our Cluster Dendogram](ClusterDendogramLog2.png)  
+
+![Paper Cluster Dendogram](PaperClusterDendrogram.png)  
+
 
 First is a graph of the mean network connectivity between genes with the first figure being my figure and the second being the one the paper reports. Again we a see a similar trend to out outlier analysis. The pattern remains in tact with out scale being wildly different. After that was the WCGNA hub gene analysis, both are titles Cluster Dendogram. The first is my reproduction and the second is the one the paper reports. These two are wildy different and do not report the same genes. Possible reasons for this is that the origional paper does not share its code so I don’t know futher speficications on the settings used. The paper reportes to have have isolated 16 modules from the Cluster Dendrogram above however they do not mention any of them other than cluster yellow. They also do not mention how these 16 clusters were chosen and they link to the above figure in lue of an explination. With this I was unable to replicate the moduels selected by the WCGNA package. 
 
