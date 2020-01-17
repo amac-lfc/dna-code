@@ -59,7 +59,7 @@ We replicated the paper “Using epigenomics data to predict gene expression in 
 
 
 ![Our Matrix](CrossCorrelatonHeatMap.png)
-
+![PaperHeatmap](Paper1HeatMap.png)
 Although inverted, we were able to successfully replicate the matrix, next step was to get a similar accuracy score. Using these 67 features we were able to predict the survival of a patient in the case of lung cancer. Ours results (see table below) match the accuracy of the article which is around 75%-78%. 
 Lung Cancer (LUAD): prediction of increase or decrease in Gene Expression
 |Method| Accuracy 
